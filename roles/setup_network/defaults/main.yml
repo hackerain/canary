@@ -10,7 +10,10 @@ StorageNetworkVlanID:
 StorageNetworkGateway:
 StorageMgmtNetworkVlanID:
 
-# should set in hostvars
+# should set in hostvars, for example:
+# [nodes]
+# node1 StorageIpSubnet=192.168.0.31/24 StorageMgmtIpSubnet=192.168.1.31/24
+# node2 StorageIpSubnet=192.168.0.32/24 StorageMgmtIpSubnet=192.168.1.32/24
 StorageIpSubnet:
 StorageMgmtIpSubnet:
 
