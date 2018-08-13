@@ -2,4 +2,5 @@
   hosts: localhost
   gather_facts: false
   tasks:
-      - msg: Canary is an ansible project consist of some common operational tasks, enjoy it:)
+    - debug:
+        msg: Canary is an ansible project consist of some common operational tasks, enjoy it:)
