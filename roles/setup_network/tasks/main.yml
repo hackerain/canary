@@ -20,10 +20,17 @@
     state: started
   become: true
 
+- name: create os-net-config configuration directory
+  file:
+    path: /etc/os-net-config
+    state: directory
+    mode: 0755
+
 - name: create os-net-config config.yml
   template:
     src: "{{ network_template }}.yml.j2"
     dest: /etc/os-net-config/config.yml
+    mode: 0644
 
 - name: execute os-net-config
   shell: os-net-config -c /etc/os-net-config/config.yml --cleanup
