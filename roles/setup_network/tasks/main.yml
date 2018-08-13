@@ -15,8 +15,9 @@
   become: true
 
 - name: Start openvswitch
-  service: openvswitch
-  state: started
+  service:
+    name: openvswitch
+    state: started
   become: true
 
 - name: create os-net-config config.yml
