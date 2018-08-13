@@ -6,10 +6,10 @@ network_config:
       -
         ip_netmask: {{ PXENetworkSubnet }}
 {% if PXENetworkGateway %}
-        routes:
-          -
-            default: true
-            next_hop: {{ PXENetworkGateway }}
+    routes:
+      -
+        default: true
+        next_hop: {{ PXENetworkGateway }}
 {% endif %}
   -
     type: ovs_bridge
