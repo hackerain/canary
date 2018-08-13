@@ -1,0 +1,14 @@
+- name: Install os-net-config
+  package:
+    name: os-net-config
+    state: present
+  become: true
+
+- name: create os-net-config config.yml
+  template:
+    src: os-net-config.yml.j2
+    dest: /etc/os-net-config/config.yml
+
+- name: execute os-net-config
+  shell: os-net-config -c /etc/os-net-config/config.yml --cleanup
+  become: true

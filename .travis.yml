@@ -1,0 +1,12 @@
+---
+language: python
+python: "2.7"
+
+install:
+  - sudo pip install ansible
+
+script:
+  - ./start.sh -p playbooks/setup_network.yml -i inventory/structure -t all --syntax-check
+
+notifications:
+  email: false

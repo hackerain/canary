@@ -1,0 +1,5 @@
+- name: Setup network for nodes
+  hosts: nodes
+  gather_facts: false
+  roles:
+    - setup_network

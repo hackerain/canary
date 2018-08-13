@@ -1,0 +1,43 @@
+network_config:
+  -
+    type: ovs_bridge
+    name: {{ OVSBridgeName }}
+    mtu: {{ MTU }}
+    members:
+      -
+        type: linux_bond
+        name: {{ LinuxBondName }}
+        bonding_options: {{ LinuxBondOptions }}
+        mtu: {{ MTU }}
+        members:
+          -
+            type: interface
+            name: {{ NIC1 }}
+            mtu: {{ MTU }}
+            primary: true
+          -
+            type: interface
+            name: {{ NIC2 }}
+            mtu: {{ MTU }}
+      -
+        type: vlan
+        device: {{ LinuxBondName }}
+        vlan_id: {{ StorageNetworkVlanID }}
+        mtu: {{ MTU }}
+        addresses:
+          -
+            ip_netmask: {{ StorageIpSubnet }}
+      {% if StorageNetworkGateway %}
+        routes:
+          -
+            default: true
+            next_hop: {{ StorageNetworkGateway }}
+      {% endif %}
+      -
+        type: vlan
+        device: {{ LinuxBondName }}
+        vlan_id: {{ StorageMgmtNetworkVlanID }}
+        mtu: {{ MTU }}
+        addresses:
+          -
+            ip_netmask: {{ StorageMgmtIpSubnet }}

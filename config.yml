@@ -1,0 +1,6 @@
+OVSBridgeName: ovs_storage
+NIC1: nic3
+NIC2: nic4
+StorageNetworkVlanID: 3021
+StorageNetworkGateway: 10.0.121.1
+StorageMgmtNetworkVlanID: 3022

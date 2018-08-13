@@ -1,0 +1,16 @@
+# should set in config.yml
+OVSBridgeName:
+NIC1:
+NIC2:
+StorageNetworkVlanID:
+StorageNetworkGateway:
+StorageMgmtNetworkVlanID:
+
+# should set in hostvars
+StorageIpSubnet:
+StorageMgmtIpSubnet:
+
+# should be default
+MTU: 1500
+LinuxBondName: bond0
+LinuxBondOptions: "mode=802.3ad lacp_rate=1 updelay=1000 miimon=100"
