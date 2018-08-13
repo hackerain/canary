@@ -8,6 +8,17 @@
     state: present
   become: true
 
+- name: Install openvswitch
+  package:
+    name: openvswitch
+    state: present
+  become: true
+
+- name: Start openvswitch
+  service: openvswitch
+  state: started
+  become: true
+
 - name: create os-net-config config.yml
   template:
     src: "{{ network_template }}.yml.j2"
