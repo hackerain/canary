@@ -1,4 +1,16 @@
 network_config:
+  - type: interface
+    name: {{ PXENic }}
+    use_dhcp: false
+    addresses:
+      -
+        ip_netmask: {{ PXENetworkSubnet }}
+{% if PXENetworkGateway %}
+        routes:
+          -
+            default: true
+            next_hop: {{ PXENetworkGateway }}
+{% endif %}
   -
     type: ovs_bridge
     name: {{ OVSBridgeName }}
@@ -12,12 +24,12 @@ network_config:
         members:
           -
             type: interface
-            name: {{ NIC1 }}
+            name: {{ BondNic1 }}
             mtu: {{ MTU }}
             primary: true
           -
             type: interface
-            name: {{ NIC2 }}
+            name: {{ BondNic2 }}
             mtu: {{ MTU }}
       -
         type: vlan
@@ -27,12 +39,12 @@ network_config:
         addresses:
           -
             ip_netmask: {{ StorageIpSubnet }}
-      {% if StorageNetworkGateway %}
+{% if StorageNetworkGateway %}
         routes:
           -
             default: true
             next_hop: {{ StorageNetworkGateway }}
-      {% endif %}
+{% endif %}
       -
         type: vlan
         device: {{ LinuxBondName }}

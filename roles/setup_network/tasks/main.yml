@@ -33,5 +33,5 @@
     mode: 0644
 
 - name: execute os-net-config
-  shell: os-net-config -c /etc/os-net-config/config.yml --cleanup
+  shell: os-net-config -vc /etc/os-net-config/config.yml --cleanup
   become: true
