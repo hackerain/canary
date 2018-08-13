@@ -10,7 +10,7 @@ DEFAULT_OPT_TAGS="untagged"
 
 
 : ${OPT_TAGS:=$DEFAULT_OPT_TAGS}
-: ${OPT_PLAYBOOK:=$GREM_DIR/playbooks/drill.yml}
+: ${OPT_PLAYBOOK:=$GREM_DIR/playbooks/hello.yml}
 : ${OPT_CONFIG:=$GREM_DIR/config.yml}
 
 

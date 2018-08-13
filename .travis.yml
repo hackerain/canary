@@ -6,6 +6,7 @@ install:
   - sudo pip install ansible
 
 script:
+  - ./start.sh -p playbooks/hello.yml -i inventory/structure -t all --syntax-check
   - ./start.sh -p playbooks/setup_network.yml -i inventory/structure -t all --syntax-check
 
 notifications:

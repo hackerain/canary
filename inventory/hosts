@@ -5,7 +5,7 @@
 # # file in the inventory directory, rather than editing this file) to
 # # set up typical groups of services.
 
-myip ansible_connection=local ansible_become=true
+localhost ansible_connection=local ansible_become=true
 
 [nodes]
-myip
+localhost
