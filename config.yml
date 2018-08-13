@@ -5,3 +5,4 @@ BondNic2: nic3
 StorageNetworkVlanID: 3021
 StorageNetworkGateway: 10.0.121.1
 StorageMgmtNetworkVlanID: 3022
+dns_server: 10.0.120.21

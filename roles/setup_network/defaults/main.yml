@@ -2,6 +2,8 @@ network_template: bond_with_vlan
 
 # Options in bond_with_vlan template
 
+dns_server:
+
 # should set in config.yml
 OVSBridgeName:
 
