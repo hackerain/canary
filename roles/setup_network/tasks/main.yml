@@ -10,7 +10,7 @@
 
 - name: create os-net-config config.yml
   template:
-    src: {{ network_template }}.yml.j2
+    src: "{{ network_template }}.yml.j2"
     dest: /etc/os-net-config/config.yml
 
 - name: execute os-net-config
