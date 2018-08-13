@@ -14,3 +14,4 @@ StorageMgmtIpSubnet:
 MTU: 1500
 LinuxBondName: bond0
 LinuxBondOptions: "mode=802.3ad lacp_rate=1 updelay=1000 miimon=100"
+network_template: bond_with_vlan

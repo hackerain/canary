@@ -1,3 +1,7 @@
+# This role default setups node with two networks bridged by
+# ovs bridge, and bonded with linux bond with mode 4. You can
+# overwrite define your template to customize your own network.
+
 - name: Install os-net-config
   package:
     name: os-net-config
@@ -6,7 +10,7 @@
 
 - name: create os-net-config config.yml
   template:
-    src: os-net-config.yml.j2
+    src: {{ network_template }}.yml.j2
     dest: /etc/os-net-config/config.yml
 
 - name: execute os-net-config
