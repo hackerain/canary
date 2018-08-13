@@ -27,7 +27,7 @@ Canary is an ansible project collecting some common operational tasks.
 
     Edit the config.yml to fit your environments.
 
-5. Run your code
+5. Run your code, for example:
 
     ```
     ./start.sh -p playbooks/setup_network.yml  # setup node network using os-net-config
