@@ -1,6 +1,6 @@
 # This role default setups node with two networks bridged by
-# ovs bridge, and bonded with linux bond with mode 4. You can
-# overwrite define your template to customize your own network.
+# ovs or linux bridge, and bonded with linux bond with mode 4.
+# You can define your template to customize your own network.
 
 - name: Install os-net-config
   package:
@@ -13,12 +13,16 @@
     name: openvswitch
     state: present
   become: true
+  when:
+    - bridge_type == 'ovs_bridge'
 
 - name: Start openvswitch
   service:
     name: openvswitch
     state: started
   become: true
+  when:
+    - bridge_type == 'ovs_bridge'
 
 - name: create os-net-config configuration directory
   file:

@@ -15,8 +15,8 @@ network_config:
         next_hop: {{ PXENetworkGateway }}
 {% endif %}
   -
-    type: ovs_bridge
-    name: {{ OVSBridgeName }}
+    type: {{ bridge_type }}
+    name: {{ bridge_name }}
     mtu: {{ MTU }}
     members:
       -

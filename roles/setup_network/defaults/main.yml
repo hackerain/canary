@@ -5,7 +5,8 @@ network_template: bond_with_vlan
 dns_server:
 
 # should set in config.yml
-OVSBridgeName:
+bridge_type: ovs_bridge
+bridge_name:
 
 # If you wrongly specify the nic mapping, resulting network unreachable,
 # you can login the machine through ipmi console, configure the pxe nic

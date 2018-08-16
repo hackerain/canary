@@ -1,4 +1,4 @@
-OVSBridgeName: ovs-storage
+bridge_name: ovs-storage
 PXENic: nic1
 BondNic1: nic2
 BondNic2: nic3
