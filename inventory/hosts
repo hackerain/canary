@@ -8,4 +8,6 @@
 localhost ansible_connection=local ansible_become=true
 
 [nodes]
-localhost
+node-30 PXENetworkSubnet=10.0.120.30/24 InternalIpSubnet=10.0.123.30/24 ExternalIpSubnet=10.0.124.30/24 TenantIpSubnet=10.0.125.30/24 StorageIpSubnet=10.0.121.30/24 StorageMgmtIpSubnet=10.0.122.30/24
+node-31 PXENetworkSubnet=10.0.120.31/24 InternalIpSubnet=10.0.123.31/24 ExternalIpSubnet=10.0.124.31/24 TenantIpSubnet=10.0.125.31/24 StorageIpSubnet=10.0.121.31/24 StorageMgmtIpSubnet=10.0.122.31/24
+node-33 PXENetworkSubnet=10.0.120.33/24 InternalIpSubnet=10.0.123.33/24 ExternalIpSubnet=10.0.124.33/24 TenantIpSubnet=10.0.125.33/24 StorageIpSubnet=10.0.121.33/24 StorageMgmtIpSubnet=10.0.122.33/24

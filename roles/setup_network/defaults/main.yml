@@ -1,4 +1,4 @@
-network_template: bond_with_vlan
+network_template: bond_with_vlan_openstack
 
 # Options in bond_with_vlan template
 
@@ -20,8 +20,12 @@ BondNic2:
 # As there is only one default route in one host route table,
 # so these two gateway can not be specified at the same time.
 PXENetworkGateway:
+ExternalNetworkGateway:
 StorageNetworkGateway:
 
+InternalNetworkVlanID:
+ExternalNetworkVlanID:
+TenantNetworkVlanID:
 StorageNetworkVlanID:
 StorageMgmtNetworkVlanID:
 
@@ -31,6 +35,9 @@ StorageMgmtNetworkVlanID:
 # node2 PXENetworkSubnet=192.168.0.32/24 StorageIpSubnet=192.168.1.32/24 StorageMgmtIpSubnet=192.168.2.32/24
 # node3 PXENetworkSubnet=192.168.0.33/24 StorageIpSubnet=192.168.1.33/24 StorageMgmtIpSubnet=192.168.2.33/24
 PXENetworkSubnet:
+InternalIpSubnet:
+ExternalIpSubnet:
+TenantIpSubnet:
 StorageIpSubnet:
 StorageMgmtIpSubnet:
 
