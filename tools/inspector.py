@@ -5,7 +5,7 @@ import time
 import argparse
 
 
-def statistics(number, data):
+def statistics(data):
     raw_data = {}
     delta_data = {}
     datas = {"rd_req": 0,
@@ -47,23 +47,16 @@ def statistics(number, data):
     conn.close()
 
     sort_delta_data = sorted(delta_data.items(), key=operator.itemgetter(1), reverse=True)
-    count = 0
     for key,value in sort_delta_data:
-        count += 1
         print key,value
-        if count >= number:
-            break
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', '--number', default=10,
-                        type=int,
-                        help='Number of Top N')
     parser.add_argument('-d', '--data', choices=['rd_req','wr_req','rd_bytes','wr_bytes'],
                         help='which data want to show')
     args = parser.parse_args()
-    statistics(args.number, args.data)
+    statistics(args.data)
 
 
 if __name__ == '__main__':
