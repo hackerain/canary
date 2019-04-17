@@ -1,0 +1,6 @@
+for key in $( set | awk '{FS="="}  /^OS_/ {print $1}' ); do unset $key ; done
+export OS_AUTH_URL={{OS_AUTH_URL}}
+export OS_USERNAME={{OS_USERNAME}}
+export OS_PASSWORD={{OS_PASSWORD}}
+export OS_PROJECT_NAME={{OS_PROJECT_NAME}}
+export OS_TENANT_NAME={{OS_TENANT_NAME}}

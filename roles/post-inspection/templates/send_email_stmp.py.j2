@@ -1,0 +1,40 @@
+# -*-coding:utf-8-*-
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import smtplib
+
+msg = MIMEMultipart()
+
+email_username = '{{email_username}}'
+email_password = '{{email_password}}'
+email_subject = u'{{time.stdout}}-{{company_name}}-运维周报'
+email_mainbody = """
+<p>尊敬的{{company_name}}客户 您好！</p>
+<p>附件为本周的运维周报，请您查收</p>
+"""
+
+files_url= '/opt/workspace/collect-word-{{cloudname}}.docx'
+to_reciver = [{{to_reciver}}]
+cc_reciver =[{{cc_reciver}}]
+reciver = to_reciver + cc_reciver
+
+att1 = MIMEText(open(files_url, 'rb').read(), 'base64', 'gb2312')
+att1["Content-Type"] = 'application/octet-stream'
+att1["Content-Disposition"] = 'attachment; filename={{time.stdout}}-{{cloudname}}.docx'
+msg.attach(att1)
+
+msg['to'] = ";".join(to_reciver)
+msg['cc'] = ";".join(cc_reciver)
+msg['from'] = email_username
+msg['subject'] = email_subject
+
+msg.attach(MIMEText(email_mainbody, 'html', 'utf-8'))
+try:
+    server = smtplib.SMTP()
+    server.connect('smtp.exmail.qq.com')
+    server.login(email_username,email_password)
+    server.sendmail(msg['from'], reciver,msg.as_string())
+    server.quit()
+    print ('ok')
+except (Exception):
+    print("fail")

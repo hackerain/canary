@@ -1,0 +1,6 @@
+---
+- name: check ansible version
+  assert:
+    that:
+      - "'2.4' in ansible_version.full"
+    msg: "ansible version must >= 2.4"

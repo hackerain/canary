@@ -1,0 +1,5 @@
+- name:  cluster inspection
+  hosts: all
+  gather_facts: false
+  roles:
+    - post-inspection

@@ -1,0 +1,10 @@
+---
+email_username:          #发送邮件使用的email
+email_password:          #发送邮件使用的email
+email_subject:           #邮件的题目
+email_mainbody:          #邮件的正文
+to_reciver:              #邮件的收件人  例如"'xxx@xxx.com'" 多个收件人 "'xxx@xxx.com', 'xxx@xxx.com'"
+cc_reciver:              #邮件抄送人    例如"'xxx@xxx.com'" 多个收件人 "'xxx@xxx.com', 'xxx@xxx.com'"
+
+jira_username:           #jira 使用的用户名
+jira_password:           #jira 使用的密码
