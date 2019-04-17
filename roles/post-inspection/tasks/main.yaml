@@ -2,6 +2,6 @@
 - name: check ansible version >= 2.4
   import_tasks: check_ansible_version.yml
 
-- name: Daily cluster inspection
-  import_tasks: daily_inspection.yml
-  tags: dail_inspect
+- name: weekly cluster inspection
+  import_tasks: weekly_repoter.yml
+  tags: weekly_repoter

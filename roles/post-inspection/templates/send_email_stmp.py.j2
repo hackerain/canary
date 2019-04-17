@@ -7,7 +7,7 @@ msg = MIMEMultipart()
 
 email_username = '{{email_username}}'
 email_password = '{{email_password}}'
-email_subject = '{{email_subject}}' 
+email_subject = '{{email_subject}}'
 email_mainbody = '{{email_mainbody}}'
 files_url= '/opt/workspace/collect-word-{{cloudname}}.docx'
 to_reciver = [{{to_reciver}}]
@@ -16,7 +16,7 @@ reciver = to_reciver + cc_reciver
 
 att1 = MIMEText(open(files_url, 'rb').read(), 'base64', 'gb2312')
 att1["Content-Type"] = 'application/octet-stream'
-att1["Content-Disposition"] = 'attachment; filename={{cloudname}}.docx'
+att1["Content-Disposition"] = 'attachment; filename={{weekly_date}}-{{cloudname}}.docx'
 msg.attach(att1)
 
 msg['to'] = ";".join(to_reciver)
@@ -32,5 +32,5 @@ try:
     server.sendmail(msg['from'], reciver,msg.as_string())
     server.quit()
     print ('ok')
-except (Exception):  
+except (Exception):
     print("fail")
