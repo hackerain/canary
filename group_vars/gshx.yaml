@@ -1,0 +1,15 @@
+---
+cloudname: 
+company_name: 
+weekly_date: 
+OS_AUTH_URL: 
+OS_USERNAME: 
+OS_PASSWORD: 
+OS_PROJECT_NAME: 
+OS_TENANT_NAME: 
+cpu_allocation_ratio: 
+mem_allocation_ratio: 
+cinder_volume_types:
+  - ssd
+  - sata
+docx_module: 

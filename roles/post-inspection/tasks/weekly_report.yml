@@ -1,0 +1,53 @@
+---
+- name: Configuration python inspection
+  block:
+    - name: move collect python
+      template:
+        src: collect.py.j2
+        dest: /tmp/collect.py
+    - name: move env keystone
+      template:
+        src: admin-openrc.j2
+        dest: /tmp/admin-openrc
+    - name: running inspection python script
+      shell :  source /tmp/admin-openrc && python /tmp/collect.py
+      register: result
+    - name: remove collect.py
+      file:
+        state: absent
+        path: '/tmp/collect.py'
+  delegate_to: "gshx"
+  become: true
+  become_user: stack
+
+- name: Configuration python generate word
+  block:
+    - name: move docx module 
+      copy:
+        src: "{{ docx_module }}"
+        dest: /tmp/{{docx_module}}.docx
+    - name: move collect-word python
+      template:
+        src: generate-word.py.j2
+        dest: /tmp/generate-word-{{cloudname}}.py
+    - name: running collect-word.py
+      shell: python /tmp/generate-word-{{cloudname}}.py
+    - name: move send email python
+      template:
+        src: send_email_stmp.py.j2
+        dest: /tmp/send_email_stmp-{{cloudname}}.py
+    - name: running send email 
+      shell: python /tmp/send_email_stmp-{{cloudname}}.py
+    - name: remove generate-word-{{cloudname}}.py
+      file:
+        state: absent
+        path: /tmp/generate-word-{{cloudname}}.py
+    - name: remove /tmp/reporter-{{cloudname}}.py
+      file:
+        state: absent
+        path: /tmp/reporter-{{cloudname}}.py
+    - name: remove /tmp/send_email_stmp-{{cloudname}}.py
+      file:
+        state: absent
+        path: /tmp/send_email_stmp-{{cloudname}}.py
+  delegate_to: "localhost"

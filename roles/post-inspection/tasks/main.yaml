@@ -1,0 +1,7 @@
+---
+- name: check ansible version >= 2.4
+  import_tasks: check_ansible_version.yml
+
+- name: Weekly  cluster inspection
+  import_tasks: weekly_report.yml
+  tags: weekly_report

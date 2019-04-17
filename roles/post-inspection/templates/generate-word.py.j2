@@ -1,0 +1,65 @@
+# -*-coding:utf-8-*-
+
+from docxtpl import DocxTemplate
+import os
+import re
+from jira import JIRA
+import json
+
+jira = JIRA(server='https://service.ustack.com', basic_auth=('{{jira_username}}', '{{jira_passward}}'))
+jira.user(jira.current_user())
+
+def searchIssues(jql, max_results=100):
+    try:
+        issues = jira.search_issues(jql, maxResults=max_results)
+        return issues
+    except Exception as e:
+        print(e)
+
+jql = '''
+    Organizations = '{{company_name}}' AND createdDate >= -7d
+'''
+issue_map = {}
+issue_list = []
+issue_content = []
+
+issues = searchIssues(jql)
+
+for issue in issues:
+    key = issue.key
+    create_date = issue.fields.created
+    summary = issue.fields.summary
+    if issue.fields.assignee:
+        assignee = issue.fields.assignee.displayName
+    else:
+        assignee = 'unassigned'
+    status = issue.fields.status.name
+    issue_list = [summary, assignee, status]
+    issue_map = dict({'label': create_date[0:10],
+                      'cols': issue_list})
+    issue_content.append(issue_map)
+
+
+tpl=DocxTemplate('/tmp/{{docx_module}}.docx')
+
+
+
+context = {
+    'company_name': u"{{company_name}}",
+    'date': "{{weekly_date}}",
+    'tbl_contents1': [
+        {'label':'', 'cols': ['{{result.stdout_lines[0]}}', '{{result.stdout_lines[1]}}', '{{result.stdout_lines[2]}}', '{{result.stdout_lines[3]}}']},
+        ],
+    'tbl_contents2': [
+        {'label':'', 'cols': ['{{result.stdout_lines[4]}}', '{{result.stdout_lines[5]}}', '{{result.stdout_lines[6]}}', '{{result.stdout_lines[7]}}']},
+        ],
+    'tbl_contents3': [
+        {'label':'', 'cols': ['{{result.stdout_lines[8]}}', '{{result.stdout_lines[9]}}', '{{result.stdout_lines[10]}}', '{{result.stdout_lines[11]}}']},
+        ],
+    'tbl_contents4': [
+        {'label':'', 'cols': ['{{result.stdout_lines[12]}}', '{{result.stdout_lines[13]}}', '{{result.stdout_lines[14]}}', '{{result.stdout_lines[15]}}']},
+        ],
+    'tbl_contents': issue_content,
+}
+tpl.render(context)
+tpl.save('/opt/workspace/collect-word-{{cloudname}}.docx')
