@@ -1,1 +1,24 @@
 ---
+email_username: email_username
+email_password: email_password
+email_subject:  email_subject
+email_mainbody: email_mainbody
+to_reciver: "'xxx@xxx.com'"
+cc_reciver: "'xxx@xxx.com'"
+
+jira_username: jira_username
+jira_password: jira_password
+cloudname: cloudname
+company_name: 云平台
+OS_AUTH_URL: http://xxx.com
+OS_USERNAME: admin
+OS_PASSWORD: admin
+OS_PROJECT_NAME: admin
+OS_TENANT_NAME: admin
+cpu_allocation_ratio: 16
+mem_allocation_ratio: 1
+cinder_volume_types:
+  - ssd
+  - sata
+docx_module: xxx.docx
+env_version: UOS4
