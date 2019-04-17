@@ -16,7 +16,7 @@ reciver = to_reciver + cc_reciver
 
 att1 = MIMEText(open(files_url, 'rb').read(), 'base64', 'gb2312')
 att1["Content-Type"] = 'application/octet-stream'
-att1["Content-Disposition"] = 'attachment; filename={{weekly_date}}-{{cloudname}}.docx'
+att1["Content-Disposition"] = 'attachment; filename={{time.stdout}}-{{cloudname}}.docx'
 msg.attach(att1)
 
 msg['to'] = ";".join(to_reciver)

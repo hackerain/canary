@@ -5,6 +5,7 @@ import os
 import re
 from jira import JIRA
 import json
+import time
 
 jira = JIRA(server='https://service.ustack.com', basic_auth=('{{jira_username}}', '{{jira_password}}'))
 jira.user(jira.current_user())
@@ -37,14 +38,18 @@ for issue in issues:
     issue_list = [summary, assignee, status]
     issue_map = {'label': create_date[0:10],
                  'cols': issue_list}
-    issue_content.append(issue_map) 
+    issue_content.append(issue_map)
 
 tpl=DocxTemplate('/tmp/{{docx_module}}.docx')
+
+weekly_date = time.strftime('%Y.%m.%d',time.localtime(time.time()-604800))  + '-' + time.strftime('%Y.%m.%d',time.localtime(time.time()))
+
+print weekly_date
 
 
 context = {
     'company_name': u"{{company_name}}",
-    'date': "{{weekly_date}}",
+    'date': weekly_date,
     'tbl_contents1': [
         {'label':'', 'cols': ['{{(result.stdout|from_yaml).vms_count}}', '{{(result.stdout|from_yaml).vms_on_count}}', '{{(result.stdout|from_yaml).volume_ssd_count}}', '{{(result.stdout|from_yaml).volume_sata_count}}']},
         ],

@@ -1,16 +1,15 @@
 ---
-cloudname:                        # 目的集群的名称（英文）
-company_name:                     # 目的集群的名称 （中文）
-weekly_date:                      # 目的集群周报时间跨度   例如：20190101-20190105
-OS_AUTH_URL:                      # 目的集群的openstack认证信息url
-OS_USERNAME:                      # 目的集群的openstack用户名
-OS_PASSWORD:                      # 目的集群的openstack密码
-OS_PROJECT_NAME:                  # 目的集群的openstack project name
-OS_TENANT_NAME:                   # 目的集群的openstack 的tenant name
+cloudname: cloudname                        # 目的集群的名称（英文）
+company_name: 云平台                    # 目的集群的名称 （中文）
+OS_AUTH_URL: ''                     # 目的集群的openstack认证信息url
+OS_USERNAME: ''                     # 目的集群的openstack用户名
+OS_PASSWORD: ''                     # 目的集群的openstack密码
+OS_PROJECT_NAME: ''                 # 目的集群的openstack project name
+OS_TENANT_NAME: ''                  # 目的集群的openstack 的tenant name
 cpu_allocation_ratio: 16          # 目的openstack 集群 cpu超售比
 mem_allocation_ratio: 1           # 目的openstack 集群 内存超售比
 cinder_volume_types:
   - ssd
   - sata
-docx_module:                      #目的集群使用的周报word模版 例如 xxxx.docx  存放在canary/roles/post-inspection/files/下
-env_version:                      #目的集群使用的集群版本  例如 UOS4  or UOS2
+docx_module: xxx.docx                     #目的集群使用的周报word模版 例如 xxxx.docx  存放在canary/roles/post-inspection/files/下
+env_version: UOS4                     #目的集群使用的集群版本  例如 UOS4  or UOS2
