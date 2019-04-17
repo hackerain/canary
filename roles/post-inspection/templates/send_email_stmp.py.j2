@@ -10,8 +10,8 @@ email_password = '{{email_password}}'
 email_subject = '{{email_subject}}' 
 email_mainbody = '{{email_mainbody}}'
 files_url= '/opt/workspace/collect-word-{{cloudname}}.docx'
-to_reciver = ['{{to_reciver}}']
-cc_reciver =['{{cc_reciever}}']
+to_reciver = [{{to_reciver}}]
+cc_reciver =[{{cc_reciver}}]
 reciver = to_reciver + cc_reciver
 
 att1 = MIMEText(open(files_url, 'rb').read(), 'base64', 'gb2312')
@@ -28,7 +28,7 @@ msg.attach(MIMEText(email_mainbody, 'plain', 'utf-8'))
 try:
     server = smtplib.SMTP()
     server.connect('smtp.exmail.qq.com')
-    server.login(email_uername,email_password)
+    server.login(email_username,email_password)
     server.sendmail(msg['from'], reciver,msg.as_string())
     server.quit()
     print ('ok')

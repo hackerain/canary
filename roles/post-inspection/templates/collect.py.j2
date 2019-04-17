@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-# This script generates etc hosts configuration, ansible inventory information
-# and clush nodes configuration.
-# Run this script on undercloud.
-# Usage:
-# stackrc required.
 from __future__ import division
 from keystoneauth1 import session
 from novaclient import client
@@ -51,6 +46,7 @@ volume_ssd_used = 0
 volume_sata_all = 0
 volume_sata_used = 0
 
+{%if env_version == 'UOS4' %}
 CMD = ['ssh', 'heat-admin@overcloud-controller-0', 'sudo', 'ceph', 'osd', 'df', 'tree', '--format', 'json']
 ceph_osd_df_dump_json = subprocess.check_output(CMD)
 ceph_osd_df_dump = json.loads(ceph_osd_df_dump_json)
@@ -61,9 +57,18 @@ for node in ceph_osd_df_dump['nodes']:
     if node['name'] == 'HDD':
        volume_sata_all += node['kb'] / 1024 / 1024
        volume_sata_used += node['kb_used'] / 1024 / 1024
-
-print vms_count
-print vms_on_count
+{% elif env_version == "UOS2" %}
+CMD = [ 'ceph', 'osd', 'df', 'tree', '--format', 'json']
+ceph_osd_df_dump_json = subprocess.check_output(CMD)
+ceph_osd_df_dump = json.loads(ceph_osd_df_dump_json)
+for node in ceph_osd_df_dump['nodes']:
+    if node['name'] == 'apple':
+       volume_ssd_all += node['kb'] / 1024 / 1024
+       volume_ssd_used += node['kb_used'] / 1024 / 1024
+    if node['name'] == 'sata01':
+       volume_sata_all += node['kb'] / 1024 / 1024
+       volume_sata_used += node['kb_used'] / 1024 / 1024
+{%endif%}
 
 volume_ssd_count = 0
 volume_sata_count = 0
@@ -73,17 +78,24 @@ for volume in volumes:
        volume_ssd_count+=1
     if type=='sata':
        volume_sata_count+=1
-print volume_ssd_count
-print volume_sata_count
-print vcpus_used
-print vcpus_all
-print {{cpu_allocation_ratio}}
-print cpu_used_percent
-print mem_used
-print '%.2f' % (mem_all)
-print {{mem_allocation_ratio}}
-print mem_used_percent
-print '%.2f' % (volume_ssd_used)
-print '%.2f' % (volume_ssd_all)
-print '%.2f' % (volume_sata_used)
-print '%.2f' % (volume_sata_all)
+
+data = {}
+
+data = {'vms_count': vms_count,
+        'vms_on_count': vms_on_count,
+        'volume_ssd_count': volume_ssd_count,
+        'volume_sata_count': volume_sata_count,
+        'vcpus_used': vcpus_used,
+        'vcpus_all': vcpus_all,
+        'cpu_allocation_ratio': {{cpu_allocation_ratio}},
+        'cpu_used_percent': cpu_used_percent,
+        'mem_used': mem_used,
+        'mem_all': '%.2f' % (mem_all),
+        'mem_allocation_ratio': {{mem_allocation_ratio}},
+        'volume_ssd_used': '%.2f' % (volume_ssd_used),
+        'volume_ssd_all': '%.2f' % (volume_ssd_all),
+        'volume_sata_used': '%.2f' % (volume_sata_used),
+        'volume_sata_all': '%.2f' % (volume_sata_all)}
+
+
+print data
