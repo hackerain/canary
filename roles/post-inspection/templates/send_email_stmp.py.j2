@@ -7,8 +7,12 @@ msg = MIMEMultipart()
 
 email_username = '{{email_username}}'
 email_password = '{{email_password}}'
-email_subject = '{{email_subject}}'
-email_mainbody = '{{email_mainbody}}'
+email_subject = u'{{time.stdout}}-{{company_name}}-运维周报'
+email_mainbody = """
+<p>尊敬的{{company_name}}客户 您好！</p>
+<p>附件为本周的运维周报，请您查收</p>
+"""
+
 files_url= '/opt/workspace/collect-word-{{cloudname}}.docx'
 to_reciver = [{{to_reciver}}]
 cc_reciver =[{{cc_reciver}}]
@@ -24,7 +28,7 @@ msg['cc'] = ";".join(cc_reciver)
 msg['from'] = email_username
 msg['subject'] = email_subject
 
-msg.attach(MIMEText(email_mainbody, 'plain', 'utf-8'))
+msg.attach(MIMEText(email_mainbody, 'html', 'utf-8'))
 try:
     server = smtplib.SMTP()
     server.connect('smtp.exmail.qq.com')
