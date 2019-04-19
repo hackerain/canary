@@ -5,3 +5,6 @@
 - name: weekly cluster inspection
   import_tasks: weekly_repoter.yml
   tags: weekly_repoter
+- name: Weekly cluster inspection for uos2.0
+  import_tasks: weekly_reporter2.yml
+  tags: weekly_inspect_uos2

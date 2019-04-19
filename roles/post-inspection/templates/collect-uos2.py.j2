@@ -1,0 +1,194 @@
+# -*- coding: utf-8 -*-
+from __future__ import division
+import json
+import requests
+import datetime
+import os
+
+from keystoneclient.v3 import client
+from cinderclient.v1 import client as cinder_client
+from novaclient.v1_1 import client as nova_client
+
+
+CLOUDS = {"sh": {"os_auth_url": "{{OS_AUTH_URL}}",
+                 "regions": ["RegionOne"],
+                 "admin_user": "{{OS_USERNAME}}",
+                 "admin_password": "{{OS_PASSWORD}}",
+                 "admin_tenant_name": "{{OS_TENANT_NAME}}"},
+}
+
+
+def wrap_exception(default_return_value=[]):
+    def wrapper(f):
+        def inner(*args, **kwargs):
+            try:
+                return f(*args, **kwargs)
+            except Exception:
+                return default_return_value
+        return inner
+    return wrapper
+
+
+def force_v3_api(url):
+    if url is None:
+        return url
+    if url.endswith('/v2.0'):
+        return url.replace('/v2.0', '/v3')
+    return url
+
+
+def get_ks_client(cloud):
+    ks_client = client.Client(user_domain_name="Default",
+                              username=cloud['admin_user'],
+                              password=cloud['admin_password'],
+                              project_domain_name="Default",
+                              project_name=cloud['admin_tenant_name'],
+                              auth_url=cloud['os_auth_url'])
+    ks_client.management_url = force_v3_api(ks_client.management_url)
+    return ks_client
+
+
+def get_token(ks_client):
+    return ks_client.auth_token
+
+
+def get_admin_tenant_id(ks_client):
+    return ks_client.project_id
+
+
+def _get_catalog(ks_client):
+    try:
+        endpoints = ks_client.endpoints.list()
+        services = ks_client.services.list()
+    except Exception as e:
+        LOG.exception('failed to load endpoints from kesytone:%s' % e)
+        return []
+
+    catalog = []
+
+    for service in services:
+        _endpoints = []
+        for endpoint in endpoints:
+            if endpoint.service_id == service.id:
+                url=force_v3_api(endpoint.url) if service.type=='identity' else endpoint.url
+                _endpoints.append(dict(id=endpoint.id,
+                                       interface=endpoint.interface,
+                                       url=url,
+                                       region=endpoint.region))
+        _service = dict(id=service.id,
+                        type=service.type,
+                        endpoints=_endpoints)
+
+        catalog.append(_service)
+
+    return catalog
+
+
+def get_endpoint(ks_client, region_name, service_type):
+    catalog = _get_catalog(ks_client)
+
+    endpoint_type = 'admin'
+    project_id = get_admin_tenant_id(ks_client)
+
+    for service in catalog:
+        if service['type'] != service_type:
+            continue
+
+        endpoints = service['endpoints']
+        for endpoint in endpoints:
+            if endpoint.get('interface') != endpoint_type:
+                continue
+            if region_name and endpoint.get('region') != region_name:
+                continue
+            return (endpoint['url'].replace('$', '%') %
+                    {'tenant_id': project_id, 'project_id': project_id})
+
+
+def get_novaclient(ks_client, cloud, region_name=None):
+    endpoint = get_endpoint(ks_client, region_name, 'compute')
+    auth_token = get_token(ks_client)
+
+    c = nova_client.Client(cloud['admin_user'],
+                           cloud['admin_password'],
+                           None, # project_id is not required
+                           auth_url=cloud['os_auth_url'])
+
+    # Give auth_token and management_url directly to avoid authenticate again.
+    c.client.auth_token = auth_token
+    c.client.management_url = endpoint
+    return c
+
+
+def get_cinderclient(ks_client, cloud, region_name=None):
+    endpoint = get_endpoint(ks_client, region_name, 'volume')
+    auth_token = get_token(ks_client)
+    c = cinder_client.Client(cloud['admin_user'],
+                             cloud['admin_password'],
+                             None,
+                             auth_url=cloud['os_auth_url'])
+    c.client.auth_token = auth_token
+    c.client.management_url = endpoint
+    return c
+
+
+for cloud_name, cloud in CLOUDS.items():
+    ks_client = get_ks_client(cloud)
+
+    for region_name in cloud['regions']:
+        get_nova_client = get_novaclient(ks_client, cloud, region_name=region_name)
+        get_cinder_client = get_cinderclient(ks_client, cloud, region_name=region_name)
+        search_opts1 = {'all_tenants': 1 ,'power_state': 1}
+        search_opts2 = {'all_tenants': 1 }
+        servers = get_nova_client.servers.list(detailed=False, search_opts=search_opts1)
+        volumes = get_cinder_client.volumes.list(detailed=False, search_opts=search_opts2)
+        vms_on_count = 0
+        vms_count = get_nova_client.hypervisors.statistics().running_vms
+        vcpus_all = get_nova_client.hypervisors.statistics().vcpus
+        vcpus_used = get_nova_client.hypervisors.statistics().vcpus_used
+        mem_all = get_nova_client.hypervisors.statistics().memory_mb /1024
+        mem_used = get_nova_client.hypervisors.statistics().memory_mb_used /1024
+        cpu_used_percent = '%.2f%%' % (vcpus_used / vcpus_all / 16 *100)
+        mem_used_percent = '%.2f%%' % (mem_used / mem_all / 4 *100)
+        for server in servers:
+            vms_on_count+=1
+
+        volume_ssd_all = 0
+        volume_ssd_used = 0
+        volume_sata_all = 0
+        volume_sata_used = 0
+        process = os.popen('ceph osd df tree -f json') # return file
+        ceph_osd_df_dump_json = process.read()
+        process.close()
+        ceph_osd_df_dump = json.loads(ceph_osd_df_dump_json)
+        for node in ceph_osd_df_dump['nodes']:
+            if node['name'] == 'apple':
+               volume_ssd_all += node['kb'] / 1024 / 1024
+               volume_ssd_used += node['kb_used'] / 1024 / 1024
+            if node['name'] == 'sata01':
+               volume_sata_all += node['kb'] / 1024 / 1024
+               volume_sata_used += node['kb_used'] / 1024 / 1024
+        volume_ssd_count = 0
+        volume_sata_count = 0
+        for volume in volumes:
+            type = volume.volume_type
+            if type=='ssd':
+               volume_ssd_count+=1
+            if type=='sata':
+               volume_sata_count+=1
+
+        data = {'vms_count': vms_count,
+                'vms_on_count': vms_on_count,
+                'volume_ssd_count': volume_ssd_count,
+                'volume_sata_count': volume_sata_count,
+                'vcpus_used': vcpus_used,
+                'vcpus_all': vcpus_all,
+                'cpu_allocation_ratio': 16,
+                'cpu_used_percent': cpu_used_percent,
+                'mem_used': mem_used,
+                'mem_all': '%.2f' % (mem_all),
+                'mem_allocation_ratio': 4,
+                'volume_ssd_used': '%.2f' % (volume_ssd_used),
+                'volume_ssd_all': '%.2f' % (volume_ssd_all),
+                'volume_sata_used': '%.2f' % (volume_sata_used),
+                'volume_sata_all': '%.2f' % (volume_sata_all)}
+        print data
