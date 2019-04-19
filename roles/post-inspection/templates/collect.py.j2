@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+
+from __future__ import division
+from keystoneauth1 import session
+from novaclient import client
+from cinderclient import client as cinder_client
+import os
+import json
+import subprocess
+
+if 'OS_PROJECT_DOMAIN_NAME' and 'OS_USER_DOMAIN_NAME' in os.environ:
+    from keystoneauth1.identity import v3 as v
+    auth = v.Password(auth_url=os.environ['OS_AUTH_URL'],
+                      username=os.environ['OS_USERNAME'],
+                      password=os.environ['OS_PASSWORD'],
+                      project_name=os.environ['OS_PROJECT_NAME'],
+                      project_domain_name=os.environ['OS_PROJECT_DOMAIN_NAME'],
+                      user_domain_name=os.environ['OS_USER_DOMAIN_NAME'])
+else:
+    from keystoneauth1.identity import v2 as v
+    auth = v.Password(auth_url=os.environ['OS_AUTH_URL'],
+                      username=os.environ['OS_USERNAME'],
+                      password=os.environ['OS_PASSWORD'],
+                      tenant_name=os.environ['OS_TENANT_NAME'])
+
+sess = session.Session(auth=auth)
+nova_client = client.Client("2.1", session=sess)
+cinder_client = cinder_client.Client("2", session=sess)
+search_opts1 = {'all_tenants': 1 ,'power_state': 1}
+search_opts2 = {'all_tenants': 1 }
+servers = nova_client.servers.list(search_opts=search_opts1)
+volumes = cinder_client.volumes.list(search_opts=search_opts2)
+vms_on_count = 0
+vms_count = nova_client.hypervisors.statistics().running_vms
+vcpus_all = nova_client.hypervisors.statistics().vcpus
+vcpus_used = nova_client.hypervisors.statistics().vcpus_used
+mem_all = nova_client.hypervisors.statistics().memory_mb /1024
+mem_used = nova_client.hypervisors.statistics().memory_mb_used /1024
+cpu_used_percent = '%.2f%%' % (vcpus_used / vcpus_all / {{cpu_allocation_ratio}}*100)
+mem_used_percent = '%.2f%%' % (mem_used / mem_all / {{mem_allocation_ratio}}*100)
+for server in servers:
+    vms_on_count+=1
+
+volume_ssd_all = 0
+volume_ssd_used = 0
+volume_sata_all = 0
+volume_sata_used = 0
+
+{%if env_version == 'UOS4' %}
+CMD = ['ssh', 'heat-admin@overcloud-controller-0', 'sudo', 'ceph', 'osd', 'df', 'tree', '--format', 'json']
+ceph_osd_df_dump_json = subprocess.check_output(CMD)
+ceph_osd_df_dump = json.loads(ceph_osd_df_dump_json)
+for node in ceph_osd_df_dump['nodes']:
+    if node['name'] == 'SSD':
+       volume_ssd_all += node['kb'] / 1024 / 1024
+       volume_ssd_used += node['kb_used'] / 1024 / 1024
+    if node['name'] == 'HDD':
+       volume_sata_all += node['kb'] / 1024 / 1024
+       volume_sata_used += node['kb_used'] / 1024 / 1024
+{% elif env_version == "UOS2" %}
+CMD = [ 'ceph', 'osd', 'df', 'tree', '--format', 'json']
+ceph_osd_df_dump_json = subprocess.check_output(CMD)
+ceph_osd_df_dump = json.loads(ceph_osd_df_dump_json)
+for node in ceph_osd_df_dump['nodes']:
+    if node['name'] == 'apple':
+       volume_ssd_all += node['kb'] / 1024 / 1024
+       volume_ssd_used += node['kb_used'] / 1024 / 1024
+    if node['name'] == 'sata01':
+       volume_sata_all += node['kb'] / 1024 / 1024
+       volume_sata_used += node['kb_used'] / 1024 / 1024
+{%endif%}
+
+volume_ssd_count = 0
+volume_sata_count = 0
+for volume in volumes:
+    type = volume.volume_type
+    if type=='ssd':
+       volume_ssd_count+=1
+    if type=='sata':
+       volume_sata_count+=1
+
+data = {}
+
+data = {'vms_count': vms_count,
+        'vms_on_count': vms_on_count,
+        'volume_ssd_count': volume_ssd_count,
+        'volume_sata_count': volume_sata_count,
+        'vcpus_used': vcpus_used,
+        'vcpus_all': vcpus_all,
+        'cpu_allocation_ratio': {{cpu_allocation_ratio}},
+        'cpu_used_percent': cpu_used_percent,
+        'mem_used': mem_used,
+        'mem_all': '%.2f' % (mem_all),
+        'mem_allocation_ratio': {{mem_allocation_ratio}},
+        'volume_ssd_used': '%.2f' % (volume_ssd_used),
+        'volume_ssd_all': '%.2f' % (volume_ssd_all),
+        'volume_sata_used': '%.2f' % (volume_sata_used),
+        'volume_sata_all': '%.2f' % (volume_sata_all)}
+
+
+print data
