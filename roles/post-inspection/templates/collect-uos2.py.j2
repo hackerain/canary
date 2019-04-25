@@ -10,11 +10,11 @@ from cinderclient.v1 import client as cinder_client
 from novaclient.v1_1 import client as nova_client
 
 
-CLOUDS = {"sh": {"os_auth_url": "{{OS_AUTH_URL}}",
-                 "regions": ["RegionOne"],
-                 "admin_user": "{{OS_USERNAME}}",
-                 "admin_password": "{{OS_PASSWORD}}",
-                 "admin_tenant_name": "{{OS_TENANT_NAME}}"},
+CLOUDS = {"uos2": {"os_auth_url": "{{OS_AUTH_URL}}",
+                   "regions": ["RegionOne"],
+                   "admin_user": "{{OS_USERNAME}}",
+                   "admin_password": "{{OS_PASSWORD}}",
+                   "admin_tenant_name": "{{OS_TENANT_NAME}}"},
 }
 
 
@@ -110,10 +110,9 @@ def get_novaclient(ks_client, cloud, region_name=None):
 
     c = nova_client.Client(cloud['admin_user'],
                            cloud['admin_password'],
-                           None, # project_id is not required
+                           None,
                            auth_url=cloud['os_auth_url'])
 
-    # Give auth_token and management_url directly to avoid authenticate again.
     c.client.auth_token = auth_token
     c.client.management_url = endpoint
     return c
@@ -156,7 +155,7 @@ for cloud_name, cloud in CLOUDS.items():
         volume_ssd_used = 0
         volume_sata_all = 0
         volume_sata_used = 0
-        process = os.popen('ceph osd df tree -f json') # return file
+        process = os.popen('ceph osd df tree -f json')
         ceph_osd_df_dump_json = process.read()
         process.close()
         ceph_osd_df_dump = json.loads(ceph_osd_df_dump_json)
@@ -176,19 +175,22 @@ for cloud_name, cloud in CLOUDS.items():
             if type=='sata':
                volume_sata_count+=1
 
-        data = {'vms_count': vms_count,
-                'vms_on_count': vms_on_count,
-                'volume_ssd_count': volume_ssd_count,
-                'volume_sata_count': volume_sata_count,
-                'vcpus_used': vcpus_used,
-                'vcpus_all': vcpus_all,
-                'cpu_allocation_ratio': 16,
-                'cpu_used_percent': cpu_used_percent,
-                'mem_used': mem_used,
-                'mem_all': '%.2f' % (mem_all),
-                'mem_allocation_ratio': 4,
-                'volume_ssd_used': '%.2f' % (volume_ssd_used),
-                'volume_ssd_all': '%.2f' % (volume_ssd_all),
-                'volume_sata_used': '%.2f' % (volume_sata_used),
-                'volume_sata_all': '%.2f' % (volume_sata_all)}
-        print data
+        one_region_data = {'vms_count': vms_count,
+                           'vms_on_count': vms_on_count,
+                           'volume_ssd_count': volume_ssd_count,
+                           'volume_sata_count': volume_sata_count,
+                           'vcpus_used': vcpus_used,
+                           'vcpus_all': vcpus_all,
+                           'cpu_allocation_ratio': 16,
+                           'cpu_used_percent': cpu_used_percent,
+                           'mem_used': mem_used,
+                           'mem_all': '%.2f' % (mem_all),
+                           'mem_allocation_ratio': 4,
+                           'volume_ssd_used': '%.2f' % (volume_ssd_used),
+                           'volume_ssd_all': '%.2f' % (volume_ssd_all),
+                           'volume_sata_used': '%.2f' % (volume_sata_used),
+                           'volume_sata_all': '%.2f' % (volume_sata_all)}
+        data = json.dumps(one_region_data)
+        file = open('/tmp/{{cloudname}}', 'w')
+        file.write(data)
+        file.close()

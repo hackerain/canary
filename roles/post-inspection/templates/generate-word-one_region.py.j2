@@ -40,27 +40,35 @@ for issue in issues:
                  'cols': issue_list}
     issue_content.append(issue_map)
 
-tpl=DocxTemplate('/tmp/{{docx_module}}.docx')
-
-weekly_date = time.strftime('%Y.%m.%d',time.localtime(time.time()-604800))  + '-' + time.strftime('%Y.%m.%d',time.localtime(time.time()))
+tpl=DocxTemplate('/tmp/{{docx_module}}')
+weekly_date = time.strftime('%Y.%m.%d',time.localtime(time.time() - 604800))  + '-' + time.strftime('%Y.%m.%d',time.localtime(time.time()))
 
 print weekly_date
 
+all_data= {}
+
+for cloudname in {{cloudnames}}:
+    cloud = '/tmp/' + cloudname + '/tmp/' + cloudname
+    one_region_data = open(cloud, 'r')
+    data = one_region_data.read()
+    json_data = json.loads(data)
+    all_data.update({cloudname: json_data})
+    one_region_data.close()
 
 context = {
     'company_name': u"{{company_name}}",
     'date': weekly_date,
     'tbl_contents1': [
-        {'label':'', 'cols': ['{{(result.stdout|from_yaml).vms_count}}', '{{(result.stdout|from_yaml).vms_on_count}}', '{{(result.stdout|from_yaml).volume_ssd_count}}', '{{(result.stdout|from_yaml).volume_sata_count}}']},
+        {'label':'', 'cols': [all_data['{{cloudname}}']['vms_count'], all_data['{{cloudname}}']['vms_on_count'], all_data['{{cloudname}}']['volume_ssd_count'], all_data['{{cloudname}}']['volume_sata_count']]},
         ],
     'tbl_contents2': [
-        {'label':'', 'cols': ['{{(result.stdout|from_yaml).vcpus_used}}', '{{(result.stdout|from_yaml).vcpus_all}}', '{{(result.stdout|from_yaml).cpu_allocation_ratio}}', '{{(result.stdout|from_yaml).cpu_used_percent}}']},
+        {'label':'', 'cols': [all_data['{{cloudname}}']['vcpus_used'], all_data['{{cloudname}}']['vcpus_all'], all_data['{{cloudname}}']['cpu_allocation_ratio'], all_data['{{cloudname}}']['cpu_used_percent']]},
         ],
     'tbl_contents3': [
-        {'label':'', 'cols': ['{{(result.stdout|from_yaml).mem_used}}', '{{(result.stdout|from_yaml).mem_all}}', '{{(result.stdout|from_yaml).mem_allocation_ratio}}', '{{(result.stdout|from_yaml).volume_ssd_used}}']},
+        {'label':'', 'cols': [all_data['{{cloudname}}']['mem_used'], all_data['{{cloudname}}']['mem_all'], all_data['{{cloudname}}']['mem_allocation_ratio'], all_data['{{cloudname}}']['volume_ssd_used']]},
         ],
     'tbl_contents4': [
-        {'label':'', 'cols': ['{{(result.stdout|from_yaml).volume_ssd_used}}', '{{(result.stdout|from_yaml).volume_ssd_all}}', '{{(result.stdout|from_yaml).volume_sata_used}}', '{{(result.stdout|from_yaml).volume_sata_all}}']},
+        {'label':'', 'cols': [all_data['{{cloudname}}']['volume_ssd_used'], all_data['{{cloudname}}']['volume_ssd_all'], all_data['{{cloudname}}']['volume_sata_used'], all_data['{{cloudname}}']['volume_sata_all']]},
         ],
     'tbl_contents': issue_content,
 }

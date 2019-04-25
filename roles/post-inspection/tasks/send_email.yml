@@ -1,0 +1,46 @@
+---
+- name: Configuration python generate word
+  block:
+    - name: move docx module
+      copy:
+        src: "{{ docx_module }}"
+        dest: /tmp/{{docx_module}}
+    - name: move collect-word python
+      template:
+        src: generate-word-{{region}}.py.j2
+        dest: /tmp/generate-word-{{cloudname}}.py
+    - name: running collect-word.py
+      shell: python /tmp/generate-word-{{cloudname}}.py
+      register: time
+    - name: move send email python
+      template:
+        src: send_email_stmp.py.j2
+        dest: /tmp/send_email_stmp-{{cloudname}}.py
+    - name: running send email
+      shell: python /tmp/send_email_stmp-{{cloudname}}.py
+    - name: remove generate-word-{{cloudname}}.py
+      file:
+        state: absent
+        path: /tmp/generate-word-{{cloudname}}.py
+    - name: remove /tmp/reporter-{{cloudname}}.py
+      file:
+        state: absent
+        path: /tmp/reporter-{{cloudname}}.py
+    - name: remove /tmp/send_email_stmp-{{cloudname}}.py
+      file:
+        state: absent
+        path: /tmp/send_email_stmp-{{cloudname}}.py
+    - name: remove filespace
+      file:
+        state: absent
+        path:  /tmp/{{cloudname}}
+    - name: remove docx module
+      file:
+        state: absent
+        path:  /tmp/{{docx_module}}
+      ignore_errors: yes
+    - name: remove collect-word python
+      file:
+        state: absent
+        path: /tmp/generate-word-{{cloudname}}.py
+  delegate_to: "localhost"

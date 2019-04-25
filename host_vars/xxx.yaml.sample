@@ -1,0 +1,11 @@
+---
+OS_AUTH_URL: ''                     # 目的集群的openstack认证信息url
+OS_USERNAME: ''                     # 目的集群的openstack用户名
+OS_PASSWORD: ''                     # 目的集群的openstack密码
+OS_PROJECT_NAME: ''                 # 目的集群的openstack project name
+OS_TENANT_NAME: ''                  # 目的集群的openstack 的tenant name
+cpu_allocation_ratio: 16          # 目的openstack 集群 cpu超售比
+mem_allocation_ratio: 1           # 目的openstack 集群 内存超售比
+cinder_volume_types:
+  - ssd
+  - sata

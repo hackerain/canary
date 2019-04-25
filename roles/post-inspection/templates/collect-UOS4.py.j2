@@ -7,6 +7,8 @@ from cinderclient import client as cinder_client
 import os
 import json
 import subprocess
+import sys
+
 
 if 'OS_PROJECT_DOMAIN_NAME' and 'OS_USER_DOMAIN_NAME' in os.environ:
     from keystoneauth1.identity import v3 as v
@@ -46,7 +48,7 @@ volume_ssd_used = 0
 volume_sata_all = 0
 volume_sata_used = 0
 
-{%if env_version == 'UOS4' %}
+{% if env_version == 'UOS4' %}
 CMD = ['ssh', 'heat-admin@overcloud-controller-0', 'sudo', 'ceph', 'osd', 'df', 'tree', '--format', 'json']
 ceph_osd_df_dump_json = subprocess.check_output(CMD)
 ceph_osd_df_dump = json.loads(ceph_osd_df_dump_json)
@@ -79,23 +81,23 @@ for volume in volumes:
     if type=='sata':
        volume_sata_count+=1
 
-data = {}
+one_region_data = {'vms_count': vms_count,
+                   'vms_on_count': vms_on_count,
+                   'volume_ssd_count': volume_ssd_count,
+                   'volume_sata_count': volume_sata_count,
+                   'vcpus_used': vcpus_used,
+                   'vcpus_all': vcpus_all,
+                   'cpu_allocation_ratio': {{cpu_allocation_ratio}},
+                   'cpu_used_percent': cpu_used_percent,
+                   'mem_used': mem_used,
+                   'mem_all': '%.2f' % (mem_all),
+                   'mem_allocation_ratio': {{mem_allocation_ratio}},
+                   'volume_ssd_used': '%.2f' % (volume_ssd_used),
+                   'volume_ssd_all': '%.2f' % (volume_ssd_all),
+                   'volume_sata_used': '%.2f' % (volume_sata_used),
+                   'volume_sata_all': '%.2f' % (volume_sata_all)}
 
-data = {'vms_count': vms_count,
-        'vms_on_count': vms_on_count,
-        'volume_ssd_count': volume_ssd_count,
-        'volume_sata_count': volume_sata_count,
-        'vcpus_used': vcpus_used,
-        'vcpus_all': vcpus_all,
-        'cpu_allocation_ratio': {{cpu_allocation_ratio}},
-        'cpu_used_percent': cpu_used_percent,
-        'mem_used': mem_used,
-        'mem_all': '%.2f' % (mem_all),
-        'mem_allocation_ratio': {{mem_allocation_ratio}},
-        'volume_ssd_used': '%.2f' % (volume_ssd_used),
-        'volume_ssd_all': '%.2f' % (volume_ssd_all),
-        'volume_sata_used': '%.2f' % (volume_sata_used),
-        'volume_sata_all': '%.2f' % (volume_sata_all)}
-
-
-print data
+data = json.dumps(one_region_data)
+file = open('/tmp/{{cloudname}}', 'w')
+file.write(data)
+file.close()

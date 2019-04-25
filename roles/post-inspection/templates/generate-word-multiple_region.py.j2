@@ -1,0 +1,78 @@
+# -*-coding:utf-8-*-
+
+from docxtpl import DocxTemplate
+import os
+import re
+from jira import JIRA
+import json
+import time
+
+jira = JIRA(server='https://service.ustack.com', basic_auth=('{{jira_username}}', '{{jira_password}}'))
+jira.user(jira.current_user())
+
+def searchIssues(jql, max_results=100):
+    try:
+        issues = jira.search_issues(jql, maxResults=max_results)
+        return issues
+    except Exception as e:
+        print(e)
+
+jql = '''
+    Organizations = '{{company_name}}' AND createdDate >= -7d
+'''
+issue_map = {}
+issue_list = []
+issue_content = []
+
+issues = searchIssues(jql)
+
+for issue in issues:
+    key = issue.key
+    create_date = issue.fields.created
+    summary = issue.fields.summary
+    if issue.fields.assignee:
+        assignee = issue.fields.assignee.displayName
+    else:
+        assignee = 'unassigned'
+    status = issue.fields.status.name
+    issue_list = [summary, assignee, status]
+    issue_map = {'label': create_date[0:10],
+                 'cols': issue_list}
+    issue_content.append(issue_map)
+
+tpl=DocxTemplate('/tmp/{{docx_module}}')
+weekly_date = time.strftime('%Y.%m.%d',time.localtime(time.time() - 604800))  + '-' + time.strftime('%Y.%m.%d',time.localtime(time.time()))
+
+print weekly_date
+
+all_data= {}
+
+for cloudname in {{cloudnames}}:
+    cloud = '/tmp/' + cloudname + '/tmp/' + cloudname
+    one_region_data = open(cloud, 'r')
+    data = one_region_data.read()
+    json_data = json.loads(data)
+    all_data.update({cloudname: json_data})
+    one_region_data.close()
+
+context = {
+    'company_name': u"{{company_name}}",
+    'date': weekly_date,
+{% for cloudname in cloudnames %}
+    'tbl_contents_{{cloudname}}_1': [
+        {'label':'', 'cols': [all_data['{{cloudname}}']['vms_count'], all_data['{{cloudname}}']['vms_on_count'], all_data['{{cloudname}}']['volume_ssd_count'], all_data['{{cloudname}}']['volume_sata_count']]},
+        ],
+    'tbl_contents_{{cloudname}}_2': [
+        {'label':'', 'cols': [all_data['{{cloudname}}']['vcpus_used'], all_data['{{cloudname}}']['vcpus_all'], all_data['{{cloudname}}']['cpu_allocation_ratio'], all_data['{{cloudname}}']['cpu_used_percent']]},
+        ],
+    'tbl_contents_{{cloudname}}_3': [
+        {'label':'', 'cols': [all_data['{{cloudname}}']['mem_used'], all_data['{{cloudname}}']['mem_all'], all_data['{{cloudname}}']['mem_allocation_ratio'], all_data['{{cloudname}}']['volume_ssd_used']]},
+        ],
+    'tbl_contents_{{cloudname}}_4': [
+        {'label':'', 'cols': [all_data['{{cloudname}}']['volume_ssd_used'], all_data['{{cloudname}}']['volume_ssd_all'], all_data['{{cloudname}}']['volume_sata_used'], all_data['{{cloudname}}']['volume_sata_all']]},
+        ],
+{% endfor %}
+    'tbl_contents': issue_content,
+}
+tpl.render(context)
+tpl.save('/opt/workspace/collect-word-{{cloudname}}.docx')

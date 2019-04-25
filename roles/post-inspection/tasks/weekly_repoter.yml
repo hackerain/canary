@@ -3,51 +3,25 @@
   block:
     - name: move collect python
       template:
-        src: collect.py.j2
-        dest: /tmp/collect.py
+        src: collect-{{env_version}}.py.j2
+        dest: /tmp/collect-{{env_version}}.py
     - name: move env keystone
       template:
         src: admin-openrc.j2
         dest: /tmp/admin-openrc
     - name: running inspection python script
-      shell :  source /tmp/admin-openrc && python /tmp/collect.py
-      register: result
+      shell :  source /tmp/admin-openrc && python /tmp/collect-{{env_version}}.py
+    - name: mv collect information
+      fetch:
+        src: /tmp/{{cloudname}}
+        dest: /tmp/
     - name: remove collect.py
       file:
         state: absent
-        path: '/tmp/collect.py'
+        path: '/tmp/collect-{{env_version}}.py'
+    - name: remove admin-openrc
+      file:
+        state: absent
+        path: '/tmp/admin-openrc'
   become: true
-  become_user: stack
-
-- name: Configuration python generate word
-  block:
-    - name: move docx module
-      copy:
-        src: "{{ docx_module }}"
-        dest: /tmp/{{docx_module}}.docx
-    - name: move collect-word python
-      template:
-        src: generate-word.py.j2
-        dest: /tmp/generate-word-{{cloudname}}.py
-    - name: running collect-word.py
-      shell: python /tmp/generate-word-{{cloudname}}.py
-      register: time
-    - name: move send email python
-      template:
-        src: send_email_stmp.py.j2
-        dest: /tmp/send_email_stmp-{{cloudname}}.py
-    - name: running send email
-      shell: python /tmp/send_email_stmp-{{cloudname}}.py
-    - name: remove generate-word-{{cloudname}}.py
-      file:
-        state: absent
-        path: /tmp/generate-word-{{cloudname}}.py
-    - name: remove /tmp/reporter-{{cloudname}}.py
-      file:
-        state: absent
-        path: /tmp/reporter-{{cloudname}}.py
-    - name: remove /tmp/send_email_stmp-{{cloudname}}.py
-      file:
-        state: absent
-        path: /tmp/send_email_stmp-{{cloudname}}.py
-  delegate_to: "localhost"
+  become_user: "{{running_user}}"
