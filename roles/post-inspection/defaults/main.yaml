@@ -21,4 +21,7 @@ cinder_volume_types:
   - ssd
   - sata
 docx_module: xxx.docx
-env_version: UOS4
+env_version: uos4
+cloudnames: ['xxx','xxx']
+running_user: stack
+region: multiple_region

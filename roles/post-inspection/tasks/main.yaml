@@ -5,3 +5,7 @@
 - name: weekly cluster inspection
   import_tasks: weekly_repoter.yml
   tags: weekly_repoter
+
+- name: send email
+  import_tasks: send_email.yml
+  tags: send_email

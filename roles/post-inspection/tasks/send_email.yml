@@ -1,0 +1,29 @@
+---
+- name: Configuration python generate word
+  block:
+    - name: mkdir report
+      file:
+        path: "/tmp/report"
+        state: directory
+    - name: move docx module
+      copy:
+        src: "{{ docx_module }}"
+        dest: /tmp/report/{{docx_module}}
+    - name: move collect-word python
+      template:
+        src: generate-word.py.j2
+        dest: /tmp/report/generate-word-{{cloudname}}.py
+    - name: running collect-word.py
+      shell: python /tmp/report/generate-word-{{cloudname}}.py
+      register: time
+    - name: move send email python
+      template:
+        src: send_email_stmp.py.j2
+        dest: /tmp/report/send_email_stmp-{{cloudname}}.py
+    - name: running send email
+      shell: python /tmp/report/send_email_stmp-{{cloudname}}.py
+    - name: remove work files
+      file:
+        state: absent
+        path: "/tmp/report/"
+  delegate_to: "localhost"
