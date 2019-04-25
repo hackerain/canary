@@ -134,18 +134,18 @@ for cloud_name, cloud in CLOUDS.items():
     ks_client = get_ks_client(cloud)
 
     for region_name in cloud['regions']:
-        get_nova_client = get_novaclient(ks_client, cloud, region_name=region_name)
-        get_cinder_client = get_cinderclient(ks_client, cloud, region_name=region_name)
+        n_client = get_novaclient(ks_client, cloud, region_name=region_name)
+        c_client = get_cinderclient(ks_client, cloud, region_name=region_name)
         search_opts1 = {'all_tenants': 1 ,'power_state': 1}
         search_opts2 = {'all_tenants': 1 }
-        servers = get_nova_client.servers.list(detailed=False, search_opts=search_opts1)
-        volumes = get_cinder_client.volumes.list(detailed=False, search_opts=search_opts2)
+        servers = n_client.servers.list(detailed=False, search_opts=search_opts1)
+        volumes = c_client.volumes.list(detailed=False, search_opts=search_opts2)
         vms_on_count = 0
-        vms_count = get_nova_client.hypervisors.statistics().running_vms
-        vcpus_all = get_nova_client.hypervisors.statistics().vcpus
-        vcpus_used = get_nova_client.hypervisors.statistics().vcpus_used
-        mem_all = get_nova_client.hypervisors.statistics().memory_mb /1024
-        mem_used = get_nova_client.hypervisors.statistics().memory_mb_used /1024
+        vms_count = n_client.hypervisors.statistics().running_vms
+        vcpus_all = n_client.hypervisors.statistics().vcpus
+        vcpus_used = n_client.hypervisors.statistics().vcpus_used
+        mem_all = n_client.hypervisors.statistics().memory_mb /1024
+        mem_used = n_client.hypervisors.statistics().memory_mb_used /1024
         cpu_used_percent = '%.2f%%' % (vcpus_used / vcpus_all / 16 *100)
         mem_used_percent = '%.2f%%' % (mem_used / mem_all / 4 *100)
         for server in servers:

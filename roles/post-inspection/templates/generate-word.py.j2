@@ -40,7 +40,7 @@ for issue in issues:
                  'cols': issue_list}
     issue_content.append(issue_map)
 
-tpl=DocxTemplate('/tmp/{{docx_module}}')
+tpl=DocxTemplate('/tmp/report/{{docx_module}}')
 weekly_date = time.strftime('%Y.%m.%d',time.localtime(time.time() - 604800))  + '-' + time.strftime('%Y.%m.%d',time.localtime(time.time()))
 
 print weekly_date
@@ -48,13 +48,34 @@ print weekly_date
 all_data= {}
 
 for cloudname in {{cloudnames}}:
-    cloud = '/tmp/' + cloudname + '/tmp/' + cloudname
+    cloud = '/tmp/report/' + cloudname + '/tmp/' + cloudname
     one_region_data = open(cloud, 'r')
     data = one_region_data.read()
     json_data = json.loads(data)
     all_data.update({cloudname: json_data})
     one_region_data.close()
 
+{% if region == 'multiple_region' %}
+context = {
+    'company_name': u"{{company_name}}",
+    'date': weekly_date,
+{% for cloudname in cloudnames %}
+    'tbl_contents_{{cloudname}}_1': [
+        {'label':'', 'cols': [all_data['{{cloudname}}']['vms_count'], all_data['{{cloudname}}']['vms_on_count'], all_data['{{cloudname}}']['volume_ssd_count'], all_data['{{cloudname}}']['volume_sata_count']]},
+        ],
+    'tbl_contents_{{cloudname}}_2': [
+        {'label':'', 'cols': [all_data['{{cloudname}}']['vcpus_used'], all_data['{{cloudname}}']['vcpus_all'], all_data['{{cloudname}}']['cpu_allocation_ratio'], all_data['{{cloudname}}']['cpu_used_percent']]},
+        ],
+    'tbl_contents_{{cloudname}}_3': [
+        {'label':'', 'cols': [all_data['{{cloudname}}']['mem_used'], all_data['{{cloudname}}']['mem_all'], all_data['{{cloudname}}']['mem_allocation_ratio'], all_data['{{cloudname}}']['volume_ssd_used']]},
+        ],
+    'tbl_contents_{{cloudname}}_4': [
+        {'label':'', 'cols': [all_data['{{cloudname}}']['volume_ssd_used'], all_data['{{cloudname}}']['volume_ssd_all'], all_data['{{cloudname}}']['volume_sata_used'], all_data['{{cloudname}}']['volume_sata_all']]},
+        ],
+{% endfor %}
+    'tbl_contents': issue_content,
+}
+{% elseif region == 'one_region' %}
 context = {
     'company_name': u"{{company_name}}",
     'date': weekly_date,
@@ -72,5 +93,7 @@ context = {
         ],
     'tbl_contents': issue_content,
 }
+{% endif %}
+
 tpl.render(context)
 tpl.save('/opt/workspace/collect-word-{{cloudname}}.docx')

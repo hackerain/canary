@@ -1,4 +1,11 @@
 ---
+- name: Make a report dir
+  block:
+    - name: mkdir report
+      file:
+        path: "/tmp/report"
+        state: directory
+  delegate_to: "localhost"
 - name: Configuration python inspection
   block:
     - name: move collect python
@@ -14,14 +21,13 @@
     - name: mv collect information
       fetch:
         src: /tmp/{{cloudname}}
-        dest: /tmp/
+        dest: /tmp/report/
     - name: remove collect.py
       file:
         state: absent
-        path: '/tmp/collect-{{env_version}}.py'
-    - name: remove admin-openrc
-      file:
-        state: absent
-        path: '/tmp/admin-openrc'
+        path: "{{ item }}"
+      with_items:
+        - /tmp/collect-{{env_version}}.py
+        - /tmp/admin-openrc
   become: true
   become_user: "{{running_user}}"

@@ -48,7 +48,6 @@ volume_ssd_used = 0
 volume_sata_all = 0
 volume_sata_used = 0
 
-{% if env_version == 'UOS4' %}
 CMD = ['ssh', 'heat-admin@overcloud-controller-0', 'sudo', 'ceph', 'osd', 'df', 'tree', '--format', 'json']
 ceph_osd_df_dump_json = subprocess.check_output(CMD)
 ceph_osd_df_dump = json.loads(ceph_osd_df_dump_json)
@@ -59,18 +58,6 @@ for node in ceph_osd_df_dump['nodes']:
     if node['name'] == 'HDD':
        volume_sata_all += node['kb'] / 1024 / 1024
        volume_sata_used += node['kb_used'] / 1024 / 1024
-{% elif env_version == "UOS2" %}
-CMD = [ 'ceph', 'osd', 'df', 'tree', '--format', 'json']
-ceph_osd_df_dump_json = subprocess.check_output(CMD)
-ceph_osd_df_dump = json.loads(ceph_osd_df_dump_json)
-for node in ceph_osd_df_dump['nodes']:
-    if node['name'] == 'apple':
-       volume_ssd_all += node['kb'] / 1024 / 1024
-       volume_ssd_used += node['kb_used'] / 1024 / 1024
-    if node['name'] == 'sata01':
-       volume_sata_all += node['kb'] / 1024 / 1024
-       volume_sata_used += node['kb_used'] / 1024 / 1024
-{%endif%}
 
 volume_ssd_count = 0
 volume_sata_count = 0
