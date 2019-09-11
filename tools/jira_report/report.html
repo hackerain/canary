@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>运维日报</title>
+</head>
+
+<!---邮件主体 start -->
+<body>
+<div style="width:900px;margin:0 auto;position:relative;">
+    <table width="100%" cellspacing="0" border="0" cellpadding="0">
+        <tr>
+            <td style="position:relative;">
+                <table width="100%" cellspacing="0" border="0" cellpadding="0" style="background:#3cbde5;">
+                    <tr>
+                        <td height="18"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:24px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;line-height:1.6;color:#fff;text-align:center;">{{ subject }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;line-height:1.6;color:#fff;text-align:center;">{{ date }}</td>
+                    </tr>
+                    <tr>
+                        <td height="20"></td>
+                    </tr>
+                </table>
+                <!--<img src="http://pxm1brhgs.bkt.clouddn.com/nav_logo.png" style="position:absolute;left:20px;top:20px;">-->
+            </td>
+        </tr>
+        <tr>
+            <td style="background:#f8f8f8;">
+                <table width="100%" cellspacing="0" border="0" cellpadding="0">
+                    <tr>
+                        <td width="20"></td>
+                        <td>
+                            <table width="100%" cellspacing="0" border="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <table width="100%" cellspacing="0" border="0" cellpadding="0">
+                                            <tr>
+                                                <td height="20"></td>
+                                            </tr>
+                                            <tr>
+                                                <td width="130"><img src="http://www.jiankongbao.com/img/email_v2/reprot_01.png" alt="用户头像"></td>
+                                                <td width="730">
+                                                    <table width="100%" cellspacing="0" border="0" cellpadding="0">
+                                                        <tr>
+                                                            <td style="ffont-size:16px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;line-height:2.3;color:#333;">Hi，Dear SREr：</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="font-size:14px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;line-height:1.5;color:#333;">
+                                                                以下是今天的运维日报，您可以通过它快速了解今天发生的运维事项，您也可以在服务台中了解更多的信息。
+                                                                <span style="color:red">要养成随时记录工单的良好习惯，下面无进度的工单，及时更新状态，或者将其状态设置为Pending:-)</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td height="20"></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <!-- 今日更新 start -->
+                                <tr>
+                                    <td>
+                                        <table width="100%" cellspacing="0" border="0" cellpadding="0">
+                                            <tr>
+                                                <td width="5" style="background:#3cbde5;"></td>
+                                                <td width="10"></td>
+                                                <td style="font-size:14px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;">今日更新</td>
+                                                <td align="right">
+                                                    <table cellspacing="0" border="0" cellpadding="5">
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr><td height="5"></td></tr>
+
+                                <tr>
+                                    <td style="background:#fff;">
+                                        <table width="840" border="0" cellpadding="0" style="table-layout:fixed;border-collapse:collapse;margin:20px 10px;overflow:hidden;border:none;">
+                                            <tr>
+                                                <th width="80" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">Key</th>
+                                                <th width="60" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">客户</th>
+                                                <th width="180" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">概述</th>
+                                                <th width="80" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">状态</th>
+                                                <th width="50" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">报告人</th>
+                                                <th width="50" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">处理人</th>
+                                                <th width="80" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">创建时间</th>
+                                                <th style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">最新评论</th>
+                                            </tr>
+                                            {% for cell in updated_cells %}
+                                            <tr>
+                                                <td style="padding:10px 0 0;vertical-align:top;">
+                                                    <a href="{{ cell.link }}" target="_blank" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#3cbde5;text-align:left;text-decoration:none;">
+                                                      {{ cell.key }}
+                                                    </a>
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.org }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.summary }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.status }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#3cbde5;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.reporter }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#6fb501;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.assignee }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#3cbde5;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.created }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.last_comment }}
+                                                </td>
+                                            </tr>
+                                            {%- endfor %}
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- 今日更新 end -->
+
+                                <tr><td height="20"></td></tr>
+
+                                <!-- 无进度 start -->
+                                <tr>
+                                    <td>
+                                        <table width="100%" cellspacing="0" border="0" cellpadding="0">
+                                            <tr>
+                                                <td width="5" style="background:#3cbde5;"></td>
+                                                <td width="10"></td>
+                                                <td style="font-size:14px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;">无进度</td>
+                                                <td align="right">
+                                                    <table cellspacing="0" border="0" cellpadding="5">
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr><td height="5"></td></tr>
+
+                                <tr>
+                                    <td style="background:#fff;">
+                                        <table width="840" border="0" cellpadding="0" style="table-layout:fixed;border-collapse:collapse;margin:20px 10px;overflow:hidden;border:none;">
+                                            <tr>
+                                                <th width="80" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">Key</th>
+                                                <th width="60" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">客户</th>
+                                                <th width="180" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">概述</th>
+                                                <th width="80" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">状态</th>
+                                                <th width="50" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">报告人</th>
+                                                <th width="50" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">处理人</th>
+                                                <th width="80" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">创建时间</th>
+                                                <th style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-weight:normal;color:#222;text-align:left;border-bottom:1px solid #e9e9e9;padding:0px 0 10px;">最新评论</th>
+                                            </tr>
+                                            {% for cell in non_updated_cells %}
+                                            <tr>
+                                                <td style="padding:10px 0 0;vertical-align:top;">
+                                                    <a href="{{ cell.link }}" target="_blank" style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#3cbde5;text-align:left;text-decoration:none;">
+                                                      {{ cell.key }}
+                                                    </a>
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.org }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.summary }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.status }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#3cbde5;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.reporter }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#6fb501;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.assignee }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#3cbde5;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.created }}
+                                                </td>
+                                                <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;padding:10px 0 0;vertical-align:top;text-align:left;">
+                                                  {{ cell.last_comment }}
+                                                </td>
+                                            </tr>
+                                            {%- endfor %}
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- 无进度 end -->
+
+                                <tr><td height="20"></td></tr>
+
+                                <tr>
+                                    <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;vertical-align:top;text-align:right;">是否需要退订每日报告邮件？不支持</td>
+                                </tr>
+                                <tr><td height="20"></td></tr>
+                            </table>
+                        </td>
+                        <td width="20"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+<!-- footer start -->
+<tr>
+    <td style="background:#3cbde5;position:relative;">
+        <table width="100%" cellspacing="0" border="0" cellpadding="0">
+            <tr>
+                <td width="20"></td>
+                <td>
+                    <table width="100%" cellspacing="0" border="0" cellpadding="0" >
+                        <tr><td height="20"></td></tr>
+                        <tr>
+                            <td style="font-size:13px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#fff;text-align:center;line-height:3;"><span style="font-size:22px;">Hi</span>, 您在使用过程中遇到问题，欢迎向我们咨询！</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table width="100%" cellspacing="0" border="0" cellpadding="0">
+                                    <tr>
+                                        <td width="570">
+                                            <table width="100%" cellspacing="0" border="0" cellpadding="0">
+                                                <tr>
+                                                    <td width="82" style="font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-size:13px;color:#fff;">官网平台：</td>
+                                                    <td width="">
+                                                        <table cellspacing="0" border="0" cellpadding="5">
+                                                            <tr>
+                                                                <td><a href="http://www.tfcloud.com" style="font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-size:13px;color:#fff;text-decoration:none;">www.tfcloud.com</a></td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="82" style="font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-size:13px;color:#fff;">联系我们：</td>
+                                                    <td>
+                                                        <table cellspacing="0" border="0" cellpadding="5">
+                                                            <tr>
+                                                                <td style="font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-size:13px;color:#fff;"><img src="http://www.jiankongbao.com/img/email_v2/icon_tele.png" alt="电话" style="vertical-align:top;">&nbsp;&nbsp;010-86461598</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td width="290">
+                                            <table width="100%" cellspacing="0" border="0" cellpadding="0">
+                                                <tr>
+                                                    <td width="117" style="text-align:center;"><img src="http://pxm1brhgs.bkt.clouddn.com/wechat.jpg" alt="微信码"></td>
+                                                    <td width="173" style="font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;font-size:13px;color:#fff;text-align:left;line-height:2;">关注同方有云官方微信<br>了解更多最新资讯</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <th>
+                        <td height="20"></td>
+                        </th>
+                    </table>
+                </td>
+                <td width="20"></td>
+            </tr>
+        </table>
+    </td>
+</tr>
+<!-- footer end -->
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+jira:
+  server: "https://service.ustack.com"
+  auth:
+    username: "username"
+    password: "password"
+  
+smtp:
+  host: "smtp.exmail.qq.com"
+  port: 465
+  use_tls: false
+  use_ssl: true
+  username: "username"
+  password: "password"
+  from_email: "service@unitedstack.com"
+
+recipients:
+  - guangyu@unitedstack.com
