@@ -1,12 +1,14 @@
 # Jira daily report
 
-## build the docker
+1. build the docker
 
     ```
     ./build.sh
     ```
 
-## run the docker
+2. edit the config.yaml
+
+3. run the docker
 
     ```
     ./run.sh
