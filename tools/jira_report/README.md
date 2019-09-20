@@ -11,5 +11,6 @@
 3. run the docker
 
     ```
-    ./run.sh
+    ./run.sh daily_report  # 发送日报
+    ./run.sh weekly_report # 发送周报
     ```
