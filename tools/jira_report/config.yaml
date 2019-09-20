@@ -9,9 +9,12 @@ smtp:
   port: 465
   use_tls: false
   use_ssl: true
-  username: "username"
+  username: "service@unitedstack.com"
   password: "password"
   from_email: "service@unitedstack.com"
 
 recipients:
-  - guangyu@unitedstack.com
+  daily:
+    - guangyu@unitedstack.com
+  weekly:
+    - guangyu@unitedstack.com

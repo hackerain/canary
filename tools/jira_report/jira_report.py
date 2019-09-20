@@ -1,5 +1,6 @@
 # -*-coding:utf-8-*-
 
+import sys
 import datetime
 import requests
 import json
@@ -8,6 +9,9 @@ import yaml
 
 from jira import JIRA
 from jinja2 import Environment, FileSystemLoader
+
+
+kind = sys.argv[1] if len(sys.argv) > 1 else "daily_report"
 
 
 with open("config.yaml") as f:
@@ -51,28 +55,39 @@ def get_jira_issues(filters, fields=None):
     return cells
 
 
-updated_cells = get_jira_issues("project = 同方有云工单 AND updatedDate >= startOfDay() AND updatedDate  <= endOfDay() ",
-                                fields="summary,comment,assignee,customfield_10002,status,reporter,created,updated")
+if kind == "daily_report":
+    date = datetime.date.today().strftime("%Y/%m/%d")
+    subject = u"运维日报"
+    mail_subject = u"[%s]%s" % (date, subject)
 
-non_updated_cells = get_jira_issues("project = 同方有云工单 AND updatedDate < startOfDay() AND status != Pending AND resolution = Unresolved",
+    updated_cells = get_jira_issues("project = 同方有云工单 AND updatedDate >= startOfDay() AND updatedDate  <= endOfDay() ",
                                     fields="summary,comment,assignee,customfield_10002,status,reporter,created,updated")
+    
+    non_updated_cells = get_jira_issues("project = 同方有云工单 AND updatedDate < startOfDay() AND status != Pending AND resolution = Unresolved",
+                                        fields="summary,comment,assignee,customfield_10002,status,reporter,created,updated")
+
+elif kind == "weekly_report":
+    date_end = datetime.datetime.now().strftime("%Y/%m/%d")
+    date_begin = (datetime.datetime.now() - datetime.timedelta(days=5)).strftime("%Y/%m/%d")
+    date = date_begin + "~" + date_end
+    subject = u"运维周报"
+    mail_subject = u"[%s]%s" % (date, subject)
+
+    updated_cells = get_jira_issues("project = 同方有云工单 AND updatedDate > startOfWeek() AND updatedDate < endOfWeek() ",
+                                    fields="summary,comment,assignee,customfield_10002,status,reporter,created,updated")
+    
+    non_updated_cells = get_jira_issues("project = 同方有云工单 AND updatedDate < startOfWeek() AND  status != Pending AND resolution = Unresolved",
+                                        fields="summary,comment,assignee,customfield_10002,status,reporter,created,updated")
 
 
 file_loader = FileSystemLoader('.')
 env = Environment(loader=file_loader)
 template = env.get_template('report.html')
 
-#date_end = strtime(datetime.datetime.now(), "%Y-%m-%d")
-#date_begin = strtime(datetime.datetime.now() - datetime.timedelta(days=7), "%Y-%m-%d")
-#subject = u"[%s~%s]运维周报" % (date_begin, date_end)
-
-date = datetime.date.today().strftime("%Y-%m-%d")
-subject = u"运维日报"
-mail_subject = u"[%s]%s" % (date, subject)
-
 mail_result = template.render(subject=subject, date=date,
                               updated_cells=updated_cells,
-                              non_updated_cells=non_updated_cells)
+                              non_updated_cells=non_updated_cells,
+                              kind=kind)
 body = mail_result.encode(encoding='utf_8')
 
 c = mail.EmailBackend(host=config['smtp']['host'],
@@ -83,4 +98,7 @@ c = mail.EmailBackend(host=config['smtp']['host'],
                       password=config['smtp']['password'],
                       from_email=config['smtp']['from_email'])
 
-c.send_message(config['recipients'], mail_subject, body)
+if kind == "daily_report":
+    c.send_message(config['recipients']['daily'], mail_subject, body)
+elif kind == "weekly_report":
+    c.send_message(config['recipients']['weekly'], mail_subject, body)

@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "jira_report.py" ]
+ENTRYPOINT [ "python", "jira_report.py" ]

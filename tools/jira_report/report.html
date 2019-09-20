@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>运维日报</title>
+    <title>{{ subject }}</title>
 </head>
 
 <!---邮件主体 start -->
@@ -52,7 +52,12 @@
                                                         </tr>
                                                         <tr>
                                                             <td style="font-size:14px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;line-height:1.5;color:#333;">
+                                                                {% if kind == "daily_report" %}
                                                                 以下是今天的运维日报，您可以通过它快速了解今天发生的运维事项，您也可以在服务台中了解更多的信息。
+                                                                {% endif %}
+                                                                {% if kind == "weekly_report" %}
+                                                                以下是本周的运维周报，您可以通过它快速了解本周发生的运维事项，您也可以在服务台中了解更多的信息。
+                                                                {% endif %}
                                                                 <span style="color:red">要养成随时记录工单的良好习惯，下面无进度的工单，及时更新状态，或者将其状态设置为Pending:-)</span>
                                                             </td>
                                                         </tr>
@@ -73,7 +78,14 @@
                                             <tr>
                                                 <td width="5" style="background:#3cbde5;"></td>
                                                 <td width="10"></td>
-                                                <td style="font-size:14px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;">今日更新</td>
+                                                <td style="font-size:14px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;">
+                                                    {% if kind == "daily_report" %}
+                                                    今日更新
+                                                    {% endif %}
+                                                    {% if kind == "weekly_report" %}
+                                                    本周更新
+                                                    {% endif %}
+                                                </td>
                                                 <td align="right">
                                                     <table cellspacing="0" border="0" cellpadding="5">
                                                     </table>
@@ -205,7 +217,7 @@
                                 <tr><td height="20"></td></tr>
 
                                 <tr>
-                                    <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;vertical-align:top;text-align:right;">是否需要退订每日报告邮件？不支持</td>
+                                    <td style="font-size:12px;font-family:'Microsoft YaHei',Helvetica,Arial,sans-serif;color:#222;vertical-align:top;text-align:right;">是否需要退订报告邮件？不支持</td>
                                 </tr>
                                 <tr><td height="20"></td></tr>
                             </table>
