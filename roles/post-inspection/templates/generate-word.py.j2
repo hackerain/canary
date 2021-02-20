@@ -7,38 +7,47 @@ from jira import JIRA
 import json
 import time
 
-jira = JIRA(server='https://service.ustack.com', basic_auth=('{{jira_username}}', '{{jira_password}}'))
-jira.user(jira.current_user())
 
-def searchIssues(jql, max_results=100):
-    try:
-        issues = jira.search_issues(jql, maxResults=max_results)
-        return issues
-    except Exception as e:
-        print(e)
+def jiraissue():
+    jira = JIRA(server='https://service.ustack.com', basic_auth=('{{jira_username}}', '{{jira_password}}'))
+    jira.user(jira.current_user())
 
-jql = '''
-    Organizations = '{{company_name}}' AND createdDate >= -7d
-'''
-issue_map = {}
-issue_list = []
-issue_content = []
+    def searchIssues(jql, max_results=100):
+        try:
+            issues = jira.search_issues(jql, maxResults=max_results)
+            return issues
+        except Exception as e:
+            print(e)
 
-issues = searchIssues(jql)
+    jql = '''
+        Organizations = '{{company_name}}' AND createdDate >= -7d
+    '''
 
-for issue in issues:
-    key = issue.key
-    create_date = issue.fields.created
-    summary = issue.fields.summary
-    if issue.fields.assignee:
-        assignee = issue.fields.assignee.displayName
-    else:
-        assignee = 'unassigned'
-    status = issue.fields.status.name
-    issue_list = [summary, assignee, status]
-    issue_map = {'label': create_date[0:10],
-                 'cols': issue_list}
-    issue_content.append(issue_map)
+    issues = searchIssues(jql)
+    return issues
+
+clustername = '{{cluster}}'
+if clustername == 'online':
+    issues = jiraissue()
+    issue_map = {}
+    issue_list = []
+    issue_content = []
+    for issue in issues:
+        key = issue.key
+        create_date = issue.fields.created
+        summary = issue.fields.summary
+        if issue.fields.assignee:
+            assignee = issue.fields.assignee.displayName
+        else:
+            assignee = 'unassigned'
+        status = issue.fields.status.name
+        issue_list = [summary, assignee, status]
+        issue_map = {'label': create_date[0:10],
+                     'cols': issue_list}
+        issue_content.append(issue_map)
+
+elif clustername == 'offline':
+    issue_content = []
 
 tpl=DocxTemplate('/tmp/report/{{docx_module}}')
 weekly_date = time.strftime('%Y.%m.%d',time.localtime(time.time() - 604800))  + '-' + time.strftime('%Y.%m.%d',time.localtime(time.time()))
