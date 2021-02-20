@@ -16,3 +16,4 @@ env_version: UOS4                     #目的集群使用的集群版本  例如
 cloudnames: ['','']                   # 目的集群的region_name
 running_user:                          #UOS4使用stack用户,UOS2使用root用户
 region:                                #目标集群为单region填one_region,多region填multiple_region
+cluster:                               #目标集群是在线环境填online，离线环境填offline
