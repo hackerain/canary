@@ -279,16 +279,6 @@ if __name__ == '__main__':
         username = None
         password = None
 
-    # Create an OpenerDirector with support for Basic HTTP Authentication...
-    auth_handler = urllib2.HTTPBasicAuthHandler()
-    auth_handler.add_password(realm='Elasticsearch Application',
-                              uri=url,
-                              user=username,
-                              passwd=password)
-    opener = urllib2.build_opener(auth_handler)
-    # ...and install it globally so it can be used with urlopen.
-    urllib2.install_opener(opener)
-
     inspect_cluster_status()
     inspect_node_status()
     inspect_node_indices()
