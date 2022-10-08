@@ -235,7 +235,7 @@ def inspect_snapshot_repo():
 if __name__ == '__main__':
 
     if len(sys.argv) < 2:
-        print('usage: python3 es_check.py <url> [username] [password]')
+        print('usage: python3 es_check_py3.py <url> [username] [password]')
         sys.exit()
 
     url = sys.argv[1]
