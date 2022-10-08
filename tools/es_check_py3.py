@@ -198,11 +198,11 @@ def inspect_indices_status(n=20):
     data += "按索引大小显示前%s个索引：\n" % n
     data += "||索引||主分片数||副本分片数||文档数||分片平均大小(GB)||索引大小(GB)||\n"
 
-    n_indices = sorted(indices, key=lambda x: x['store.size'], reverse=True)[0:n]
+    n_indices = sorted(indices, key=lambda x: float(x['store.size']), reverse=True)[0:n]
     shard_is_large = False
 
     for i in n_indices:
-        shard_size = int(i['store.size']) / (int(i['pri']) + int(i['rep']))
+        shard_size = float(i['store.size']) / (int(i['pri']) + int(i['rep']))
         if shard_size > 30:
             shard_is_large = True
         data += "|%s|%s|%s|%s|%s|%s|\n" % (
