@@ -202,7 +202,7 @@ def inspect_indices_status(n=20):
     shard_is_large = False
 
     for i in n_indices:
-        shard_size = float(i['store.size']) / (int(i['pri']) + int(i['rep']))
+        shard_size = float(i['store.size']) / (int(i['pri']) + int(i['rep']) * int(i['pri']))
         if shard_size > 30:
             shard_is_large = True
         data += "|%s|%s|%s|%s|%s|%s|\n" % (
